@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentHub Pro - Advanced Content Management Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #eee;
+            --success: #00d2ff;
+            --warning: #ffd700;
+            --danger: #ff6b6b;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 60px; height: 60px; top: 60%; left: 80%; animation-delay: 2s; }
+        .shape:nth-child(3) { width: 100px; height: 100px; top: 80%; left: 20%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .main {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, white, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.3);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .post {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .post:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .post-content {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .admin-controls {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .search-bar {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.6;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--gradient);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            float: right;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            z-index: 3000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { border-left: 4px solid var(--success); }
+        .notification.warning { border-left: 4px solid var(--warning); }
+        .notification.error { border-left: 4px solid var(--danger); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .nav { flex-direction: column; gap: 1rem; }
+            .post-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <i class="fas fa-rocket"></i> ContentHub Pro
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" onclick="showSection('home')">
+                    <i class="fas fa-home"></i> Home
+                </button>
+                <button class="btn btn-outline" onclick="showSection('posts')">
+                    <i class="fas fa-newspaper"></i> Posts
+                </button>
+                <button class="btn btn-outline" onclick="showSection('create')">
+                    <i class="fas fa-plus"></i> Create
+                </button>
+                <button class="btn btn-primary" onclick="toggleAdmin()">
+                    <i class="fas fa-cog"></i> Admin
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- Home Section -->
+        <section id="home" class="content-section active">
+            <div class="container">
+                <div class="hero">
+                    <h1>Welcome to ContentHub Pro</h1>
+                    <p>Create, Share, and Discover Amazing Content</p>
+                    <button class="btn btn-primary" onclick="showSection('create')">
+                        <i class="fas fa-pen"></i> Start Creating
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalPosts">0</div>
+                        <div>Total Posts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div>Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalViews">0</div>
+                        <div>Total Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalLikes">0</div>
+                        <div>Total Likes</div>
+                    </div>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3><i class="fas fa-pencil-alt"></i> Create Content</h3>
+                        <p>Share your thoughts, ideas, and stories with the world. Our advanced editor supports rich text formatting and multimedia.</p>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-users"></i> Community Driven</h3>
+                        <p>Connect with like-minded individuals and build a community around your interests and passions.</p>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-chart-line"></i> Analytics</h3>
+                        <p>Track your content performance with detailed analytics and insights to improve engagement.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Posts Section -->
+        <section id="posts" class="content-section">
+            <div class="container">
+                <h2>All Posts</h2>
+                
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search posts..." oninput="searchPosts()">
+                </div>
+
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterPosts('all')">All</button>
+                    <button class="filter-btn" onclick="filterPosts('recent')">Recent</button>
+                    <button class="filter-btn" onclick="filterPosts('popular')">Popular</button>
+                    <button class="filter-btn" onclick="filterPosts('featured')">Featured</button>
+                </div>
+
+                <div id="postsContainer">
+                    <!-- Posts will be loaded here -->
+                </div>
+
+                <button class="btn btn-primary" onclick="loadMorePosts()" id="loadMoreBtn" style="display: none; margin: 2rem auto;">
+                    <i class="fas fa-arrow-down"></i> Load More
+                </button>
+            </div>
+        </section>
+
+        <!-- Create Section -->
+        <section id="create" class="content-section">
+            <div class="container">
+                <div class="cards-grid">
+                    <div class="card">
+                        <h2><i class="fas fa-plus-circle"></i> Create New Post</h2>
+                        <form id="createPostForm" onsubmit="createPost(event)">
+                            <div class="form-group">
+                                <label for="authorName">Your Name</label>
+                                <input type="text" id="authorName" class="form-control" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="postTitle">Title</label>
+                                <input type="text" id="postTitle" class="form-control" placeholder="Enter post title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="postContent">Content</label>
+                                <textarea id="postContent" class="form-control" placeholder="Share your thoughts..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="postTags">Tags (comma separated)</label>
+                                <input type="text" id="postTags" class="form-control" placeholder="technology, web, design">
+                            </div>
+                            <div class="form-group">
+                                <label for="postCategory">Category</label>
+                                <select id="postCategory" class="form-control">
+                                    <option value="general">General</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="design">Design</option>
+                                    <option value="business">Business</option>
+                                    <option value="lifestyle">Lifestyle</option>
+                                    <option value="education">Education</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Publish Post
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-lightbulb"></i> Writing Tips</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin: 1rem 0;"><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Write engaging titles</li>
+                            <li style="margin: 1rem 0;"><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Use proper formatting</li>
+                            <li style="margin: 1rem 0;"><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Add relevant tags</li>
+                            <li style="margin: 1rem 0;"><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Keep content original</li>
+                            <li style="margin: 1rem 0;"><i class="fas fa-check" style="color: var(--success); margin-right: 0.5rem;"></i> Engage with community</li>
+                        </ul>
+                        
+                        <h4 style="margin-top: 2rem;"><i class="fas fa-palette"></i> Format Options</h4>
+                        <p style="opacity: 0.8;">You can use basic markdown formatting in your posts. Bold text with **bold**, italic with *italic*, and create lists easily.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin" class="content-section">
+            <div class="container">
+                <h2><i class="fas fa-shield-alt"></i> Admin Dashboard</h2>
+                
+                <div class="admin-controls">
+                    <h3>Site Management</h3>
+                    <div class="control-buttons">
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button class="btn btn-outline" onclick="importData()">
+                            <i class="fas fa-upload"></i> Import Data
+                        </button>
+                        <button class="btn btn-outline" onclick="clearAllData()">
+                            <i class="fas fa-trash"></i> Clear All Data
+                        </button>
+                        <button class="btn btn-outline" onclick="generateSampleData()">
+                            <i class="fas fa-magic"></i> Generate Sample Data
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-controls">
+                    <h3>Content Moderation</h3>
+                    <div class="control-buttons">
+                        <button class="btn btn-primary" onclick="showPendingPosts()">
+                            <i class="fas fa-clock"></i> Pending Posts <span id="pendingCount">0</span>
+                        </button>
+                        <button class="btn btn-outline" onclick="showReportedPosts()">
+                            <i class="fas fa-flag"></i> Reported Posts
+                        </button>
+                        <button class="btn btn-outline" onclick="bulkModerate()">
+                            <i class="fas fa-tasks"></i> Bulk Actions
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-controls">
+                    <h3>Analytics & Reports</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="adminTotalPosts">0</div>
+                            <div>Total Posts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="adminActiveUsers">0</div>
+                            <div>Active Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="adminPostsToday">0</div>
+                            <div>Posts Today</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="adminEngagementRate">0%</div>
+                            <div>Engagement Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-controls">
+                    <h3>All Posts Management</h3>
+                    <div id="adminPostsList">
+                        <!-- Admin posts list will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+            <h3>Edit Post</h3>
+            <form id="editPostForm" onsubmit="updatePost(event)">
+                <input type="hidden" id="editPostId">
+                <div class="form-group">
+                    <label for="editAuthorName">Author Name</label>
+                    <input type="text" id="editAuthorName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPostTitle">Title</label>
+                    <input type="text" id="editPostTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPostContent">Content</label>
+                    <textarea id="editPostContent" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editPostTags">Tags</label>
+                    <input type="text" id="editPostTags" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Post</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <script>
+        // Global Variables
+        let posts = [];
+        let users = new Set();
+        let currentFilter = 'all';
+        let adminMode = false;
+        let stats = {
+            totalViews: 0,
+            totalLikes: 0
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            showSection('home');
+            updateStats();
+        });
+
+        // Data Management
+        function saveData() {
+            const data = {
+                posts: posts,
+                users: Array.from(users),
+                stats: stats,
+                lastUpdated: new Date().toISOString()
+            };
+            // In a real application, this would save to a database
+            console.log('Data saved:', data);
+        }
+
+        function loadData() {
+            // In a real application, this would load from a database
+            // For demo purposes, we'll start with empty data
+            if (posts.length === 0) {
+                generateSampleData();
+            }
+            updateStats();
+        }
+
+        function exportData() {
+            const data = {
+                posts: posts,
+                users: Array.from(users),
+                stats: stats,
+                exportDate: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'contenthub-data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            posts = data.posts || [];
+                            users = new Set(data.users || []);
+                            stats = data.stats || { totalViews: 0, totalLikes: 0 };
+                            updateStats();
+                            loadPosts();
+                            showNotification('Data imported successfully!', 'success');
+                        } catch (error) {
+                            showNotification('Error importing data!', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                posts = [];
+                users = new Set();
+                stats = { totalViews: 0, totalLikes: 0 };
+                updateStats();
+                loadPosts();
+                showNotification('All data cleared!', 'warning');
+            }
+        }
+
+        function generateSampleData() {
+            const samplePosts = [
+                {
+                    id: 1,
+                    author: 'Alex Johnson',
+                    title: 'The Future of Web Development',
+                    content: 'Web development is evolving rapidly with new frameworks, tools, and methodologies. In this post, I explore the trends that will shape the future of how we build web applications.',
+                    tags: ['web development', 'technology', 'future'],
+                    category: 'technology',
+                    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                    likes: 15,
+                    views: 234,
+                    featured: true,
+                    status: 'published'
+                },
+                {
+                    id: 2,
+                    author: 'Sarah Chen',
+                    title: 'Design Thinking in Modern UX',
+                    content: 'User experience design has become more important than ever. Here\'s how design thinking principles can transform your approach to creating meaningful digital experiences.',
+                    tags: ['ux design', 'design thinking', 'user experience'],
+                    category: 'design',
+                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    likes: 28,
+                    views: 456,
+                    featured: false,
+                    status: 'published'
+                },
+                {
+                    id: 3,
+                    author: 'Mike Rodriguez',
+                    title: 'Building Scalable APIs with Node.js',
+                    content: 'Learn how to create robust, scalable APIs using Node.js and Express. This comprehensive guide covers best practices, security considerations, and performance optimization.',
+                    tags: ['nodejs', 'api', 'backend', 'javascript'],
+                    category: 'technology',
+                    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    likes: 42,
+                    views: 678,
+                    featured: true,
+                    status: 'published'
+                },
+                {
+                    id: 4,
+                    author: 'Emma Wilson',
+                    title: 'The Art of Remote Team Management',
+                    content: 'Managing remote teams requires different skills and approaches. Discover strategies that successful leaders use to build cohesive, productive remote teams.',
+                    tags: ['remote work', 'management', 'team building'],
+                    category: 'business',
+                    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    likes: 19,
+                    views: 345,
+                    featured: false,
+                    status: 'published'
+                },
+                {
+                    id: 5,
+                    author: 'David Kim',
+                    title: 'Introduction to Machine Learning',
+                    content: 'Machine learning is transforming industries across the globe. This beginner-friendly introduction covers the basics and provides practical examples to get you started.',
+                    tags: ['machine learning', 'ai', 'data science'],
+                    category: 'technology',
+                    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    likes: 33,
+                    views: 567,
+                    featured: true,
+                    status: 'published'
+                }
+            ];
+
+            posts = samplePosts;
+            samplePosts.forEach(post => users.add(post.author));
+            stats.totalViews = posts.reduce((sum, post) => sum + post.views, 0);
+            stats.totalLikes = posts.reduce((sum, post) => sum + post.likes, 0);
+            
+            showNotification('Sample data generated!', 'success');
+            updateStats();
+            if (document.getElementById('posts').classList.contains('active')) {
+                loadPosts();
+            }
+        }
+
+        // Navigation
+        function showSection(sectionName) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionName).classList.add('active');
+            
+            if (sectionName === 'posts') {
+                loadPosts();
+            }
+            
+            updateStats();
+        }
+
+        function toggleAdmin() {
+            adminMode = !adminMode;
+            if (adminMode) {
+                showSection('admin');
+                loadAdminData();
+            } else {
+                showSection('home');
+            }
+        }
+
+        // Post Management
+        function createPost(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const newPost = {
+                id: Date.now(),
+                author: document.getElementById('authorName').value,
+                title: document.getElementById('postTitle').value,
+                content: document.getElementById('postContent').value,
+                tags: document.getElementById('postTags').value.split(',').map(tag => tag.trim()).filter(tag => tag),
+                category: document.getElementById('postCategory').value,
+                createdAt: new Date().toISOString(),
+                likes: 0,
+                views: 0,
+                featured: false,
+                status: 'published'
+            };
+            
+            posts.unshift(newPost);
+            users.add(newPost.author);
+            
+            // Reset form
+            form.reset();
+            
+            saveData();
+            updateStats();
+            showNotification('Post created successfully!', 'success');
+            
+            // Show posts section
+            setTimeout(() => {
+                showSection('posts');
+            }, 1000);
+        }
+
+        function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                posts = posts.filter(post => post.id !== postId);
+                saveData();
+                loadPosts();
+                loadAdminData();
+                updateStats();
+                showNotification('Post deleted successfully!', 'success');
+            }
+        }
+
+        function editPost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                document.getElementById('editPostId').value = post.id;
+                document.getElementById('editAuthorName').value = post.author;
+                document.getElementById('editPostTitle').value = post.title;
+                document.getElementById('editPostContent').value = post.content;
+                document.getElementById('editPostTags').value = post.tags.join(', ');
+                
+                document.getElementById('editModal').classList.add('active');
+            }
+        }
+
+        function updatePost(event) {
+            event.preventDefault();
+            
+            const postId = parseInt(document.getElementById('editPostId').value);
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex !== -1) {
+                posts[postIndex].author = document.getElementById('editAuthorName').value;
+                posts[postIndex].title = document.getElementById('editPostTitle').value;
+                posts[postIndex].content = document.getElementById('editPostContent').value;
+                posts[postIndex].tags = document.getElementById('editPostTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+                posts[postIndex].updatedAt = new Date().toISOString();
+                
+                saveData();
+                loadPosts();
+                loadAdminData();
+                closeModal('editModal');
+                showNotification('Post updated successfully!', 'success');
+            }
+        }
+
+        function toggleFeatured(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                post.featured = !post.featured;
+                saveData();
+                loadPosts();
+                loadAdminData();
+                showNotification(`Post ${post.featured ? 'featured' : 'unfeatured'}!`, 'success');
+            }
+        }
+
+        function likePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                post.likes++;
+                stats.totalLikes++;
+                saveData();
+                updateStats();
+                
+                // Update the like count in the UI
+                const likeBtn = document.querySelector(`[onclick="likePost(${postId})"]`);
+                if (likeBtn) {
+                    likeBtn.innerHTML = `<i class="fas fa-heart"></i> ${post.likes}`;
+                    likeBtn.style.background = 'var(--gradient)';
+                }
+                
+                showNotification('Post liked!', 'success');
+            }
+        }
+
+        function viewPost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                post.views++;
+                stats.totalViews++;
+                saveData();
+                updateStats();
+            }
+        }
+
+        // Display Functions
+        function loadPosts() {
+            const container = document.getElementById('postsContainer');
+            let filteredPosts = posts;
+            
+            // Apply filters
+            switch (currentFilter) {
+                case 'recent':
+                    filteredPosts = posts.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'popular':
+                    filteredPosts = posts.slice().sort((a, b) => (b.likes + b.views) - (a.likes + a.views));
+                    break;
+                case 'featured':
+                    filteredPosts = posts.filter(post => post.featured);
+                    break;
+                default:
+                    filteredPosts = posts.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+            
+            // Apply search filter
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase();
+            if (searchTerm) {
+                filteredPosts = filteredPosts.filter(post => 
+                    post.title.toLowerCase().includes(searchTerm) ||
+                    post.content.toLowerCase().includes(searchTerm) ||
+                    post.author.toLowerCase().includes(searchTerm) ||
+                    post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (filteredPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem;"></i>
+                            <h3>No posts found</h3>
+                            <p>Be the first to create a post!</p>
+                            <button class="btn btn-primary" onclick="showSection('create')">
+                                <i class="fas fa-plus"></i> Create Post
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredPosts.map(post => `
+                <div class="post" onclick="viewPost(${post.id})">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <div class="user-avatar">${post.author.charAt(0).toUpperCase()}</div>
+                            <span>${post.author}</span>
+                            ${post.featured ? '<i class="fas fa-star" style="color: var(--warning); margin-left: 0.5rem;" title="Featured"></i>' : ''}
+                        </div>
+                        <div class="post-meta">
+                            <span><i class="fas fa-calendar"></i> ${formatDate(post.createdAt)}</span>
+                            <span><i class="fas fa-eye"></i> ${post.views}</span>
+                            <span><i class="fas fa-tag"></i> ${post.category}</span>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 1rem; color: var(--accent);">${post.title}</h3>
+                    <div class="post-content">
+                        ${post.content.length > 200 ? post.content.substring(0, 200) + '...' : post.content}
+                    </div>
+                    ${post.tags.length > 0 ? `
+                        <div style="margin: 1rem 0;">
+                            ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="post-actions">
+                        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); likePost(${post.id})">
+                            <i class="fas fa-heart"></i> ${post.likes}
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="event.stopPropagation(); sharePost(${post.id})">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                        ${adminMode ? `
+                            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); editPost(${post.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm" onclick="event.stopPropagation(); deletePost(${post.id})" style="background: var(--danger);">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadAdminData() {
+            updateAdminStats();
+            loadAdminPosts();
+        }
+
+        function loadAdminPosts() {
+            const container = document.getElementById('adminPostsList');
+            
+            container.innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" id="adminSearchInput" class="form-control" placeholder="Search posts..." oninput="searchAdminPosts()" style="margin-bottom: 1rem;">
+                </div>
+                ${posts.map(post => `
+                    <div class="post" style="margin-bottom: 1rem;">
+                        <div class="post-header">
+                            <div class="post-author">
+                                <div class="user-avatar">${post.author.charAt(0).toUpperCase()}</div>
+                                <span>${post.author}</span>
+                                <span class="tag" style="background: ${post.status === 'published' ? 'var(--success)' : 'var(--warning)'}">${post.status}</span>
+                                ${post.featured ? '<i class="fas fa-star" style="color: var(--warning);"></i>' : ''}
+                            </div>
+                            <div class="post-meta">
+                                <span><i class="fas fa-eye"></i> ${post.views}</span>
+                                <span><i class="fas fa-heart"></i> ${post.likes}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatDate(post.createdAt)}</span>
+                            </div>
+                        </div>
+                        <h4 style="color: var(--accent); margin: 0.5rem 0;">${post.title}</h4>
+                        <div class="post-actions">
+                            <button class="btn btn-sm btn-primary" onclick="editPost(${post.id})">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="toggleFeatured(${post.id})">
+                                <i class="fas fa-star"></i> ${post.featured ? 'Unfeature' : 'Feature'}
+                            </button>
+                            <button class="btn btn-sm" onclick="deletePost(${post.id})" style="background: var(--danger);">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="duplicatePost(${post.id})">
+                                <i class="fas fa-copy"></i> Duplicate
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Search and Filter Functions
+        function searchPosts() {
+            loadPosts();
+        }
+
+        function searchAdminPosts() {
+            const searchTerm = document.getElementById('adminSearchInput').value.toLowerCase();
+            const postElements = document.querySelectorAll('#adminPostsList .post');
+            
+            postElements.forEach(element => {
+                const text = element.textContent.toLowerCase();
+                element.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        function filterPosts(filter) {
+            currentFilter = filter;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            loadPosts();
+        }
+
+        // Utility Functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+            if (diffDays < 365) return `${Math.ceil(diffDays / 30)} months ago`;
+            return date.toLocaleDateString();
+        }
+
+        function updateStats() {
+            const totalPosts = posts.length;
+            const totalUsers = users.size;
+            const totalViews = stats.totalViews;
+            const totalLikes = stats.totalLikes;
+            
+            // Update main stats
+            document.getElementById('totalPosts').textContent = totalPosts;
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+            document.getElementById('totalLikes').textContent = totalLikes.toLocaleString();
+        }
+
+        function updateAdminStats() {
+            const totalPosts = posts.length;
+            const activeUsers = users.size;
+            const today = new Date().toDateString();
+            const postsToday = posts.filter(post => new Date(post.createdAt).toDateString() === today).length;
+            const engagementRate = totalPosts > 0 ? Math.round((stats.totalLikes / totalPosts) * 100) : 0;
+            
+            document.getElementById('adminTotalPosts').textContent = totalPosts;
+            document.getElementById('adminActiveUsers').textContent = activeUsers;
+            document.getElementById('adminPostsToday').textContent = postsToday;
+            document.getElementById('adminEngagementRate').textContent = engagementRate + '%';
+        }
+
+        // Modal Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            messageEl.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Additional Features
+        function sharePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post && navigator.share) {
+                navigator.share({
+                    title: post.title,
+                    text: post.content.substring(0, 100) + '...',
+                    url: window.location.href + '#post-' + postId
+                });
+            } else {
+                // Fallback for browsers without Web Share API
+                const url = window.location.href + '#post-' + postId;
+                navigator.clipboard.writeText(url);
+                showNotification('Post link copied to clipboard!', 'success');
+            }
+        }
+
+        function duplicatePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                const duplicatedPost = {
+                    ...post,
+                    id: Date.now(),
+                    title: post.title + ' (Copy)',
+                    createdAt: new Date().toISOString(),
+                    likes: 0,
+                    views: 0,
+                    featured: false
+                };
+                posts.unshift(duplicatedPost);
+                saveData();
+                loadAdminData();
+                showNotification('Post duplicated successfully!', 'success');
+            }
+        }
+
+        function showPendingPosts() {
+            showNotification('No pending posts at the moment.', 'info');
+        }
+
+        function showReportedPosts() {
+            showNotification('No reported posts at the moment.', 'info');
+        }
+
+        function bulkModerate() {
+            showNotification('Bulk moderation tools will be available in the next update.', 'info');
+        }
+
+        function loadMorePosts() {
+            showNotification('All posts loaded!', 'info');
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'n':
+                        e.preventDefault();
+                        showSection('create');
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        showSection('home');
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        showSection('posts');
+                        break;
+                    case '/':
+                        e.preventDefault();
+                        const searchInput = document.getElementById('searchInput');
+                        if (searchInput) searchInput.focus();
+                        break;
+                }
+            }
+            
+            // ESC to close modals
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+
+        // Auto-save drafts (for create post form)
+        let draftTimer;
+        function setupDraftSaving() {
+            const inputs = ['authorName', 'postTitle', 'postContent', 'postTags'];
+            inputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', function() {
+                        clearTimeout(draftTimer);
+                        draftTimer = setTimeout(saveDraft, 1000);
+                    });
+                }
+            });
+        }
+
+        function saveDraft() {
+            const draft = {
+                authorName: document.getElementById('authorName').value,
+                postTitle: document.getElementById('postTitle').value,
+                postContent: document.getElementById('postContent').value,
+                postTags: document.getElementById('postTags').value
+            };
+            // In a real app, save to localStorage or send to server
+            console.log('Draft saved:', draft);
+        }
+
+        // Initialize draft saving
+        setTimeout(setupDraftSaving, 100);
+    </script>
+</body>
+</html>
